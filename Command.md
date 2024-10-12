@@ -7,3 +7,5 @@ ansible-playbook -i inventory.ini install-docker-and-nginx.yml
 ```sh
 ansible-playbook -i inventory.ini setup-domain-with-nginx.yml
 ```
+
+# More useful example, please search in Ansible Galaxy
