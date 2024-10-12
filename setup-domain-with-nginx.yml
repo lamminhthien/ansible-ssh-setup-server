@@ -12,6 +12,10 @@
       prompt: "Enter the port"
       private: no
 
+    - name: "email"
+      prompt: "Enter your email address for SSL certificate registration"
+      private: no
+
   tasks:
     - name: Install Nginx
       apt:
@@ -49,6 +53,25 @@
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
+
+    - name: Install Certbot
+      apt:
+        name: 
+          - certbot
+          - python3-certbot-nginx
+        state: present
+        update_cache: yes
+
+    - name: Request SSL certificate
+      command: >
+        certbot --nginx -d {{ domain }} --non-interactive --agree-tos --email {{ email }}
+      register: certbot_result
+      ignore_errors: yes
+
+    - name: Check if SSL certificate was obtained
+      fail:
+        msg: "Failed to obtain SSL certificate for {{ domain }}. Check the logs for details."
+      when: certbot_result.rc != 0
 
     - name: Reload Nginx
       service:
