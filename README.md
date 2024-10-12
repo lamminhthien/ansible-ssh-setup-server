@@ -68,68 +68,61 @@ Great choice! Ansible is a powerful and user-friendly tool for automation. Here'
 
 5. Create an Ansible playbook:
    ```
-   touch playbook.yml
+   touch install-docker-and-nginx.yml
    ```
 
-6. Edit the playbook.yml file to include tasks for installing Docker, Docker Compose, and Nginx. Here's a basic example:
+6. Edit the install-docker-and-nginx.yml file to include tasks for installing Docker, Docker Compose, and Nginx. Here's a basic example:
 
    
 
    ```yaml
 ---
-   - hosts: servers
-     become: yes
-     tasks:
-       - name: Update apt cache
-         apt:
-           update_cache: yes
+- name: Install Docker and Nginx
+  hosts: all
+  become: yes
 
-       - name: Install Docker dependencies
-         apt:
-           name:
-             - apt-transport-https
-             - ca-certificates
-             - curl
-             - software-properties-common
-           state: present
+  tasks:
+    - name: Add Docker GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
 
-       - name: Add Docker GPG key
-         apt_key:
-           url: https://download.docker.com/linux/ubuntu/gpg
-           state: present
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64,arm64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        state: present
 
-       - name: Add Docker repository
-         apt_repository:
-           repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-           state: present
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
 
-       - name: Install Docker
-         apt:
-           name: docker-ce
-           state: present
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: present
 
-       - name: Install Docker Compose
-         get_url:
-           url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-           dest: /usr/local/bin/docker-compose
-           mode: '0755'
+    - name: Install Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
 
-       - name: Install Nginx
-         apt:
-           name: nginx
-           state: present
+    - name: Start and enable Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
 
-       - name: Start Nginx service
-         service:
-           name: nginx
-           state: started
-           enabled: yes
-   
+    - name: Start and enable Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+
 ```
 
 7. Run the playbook:
    ```
-   ansible-playbook -i inventory.ini playbook.yml --ask-become-pass
+   ansible-playbook -i inventory.ini install-docker-and-nginx.yml --ask-become-pass
    ```
 
 This playbook assumes you're using an Ubuntu-based server. You might need to adjust it based on your specific server OS.
