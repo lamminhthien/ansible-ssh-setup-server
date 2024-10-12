@@ -1,3 +1,36 @@
+Note: Before doing this tutorial, take note about installing Debian with VMware and configuring to use SSH.
+
+Login as root
+
+```sudo su -```
+
+Open the SSH configuration file
+
+```nano /etc/ssh/sshd_config```
+
+```
+# Allow password authentication
+PasswordAuthentication yes
+
+# Allow public key authentication
+PubkeyAuthentication yes
+
+# Permit root login (not recommended for production)
+PermitRootLogin yes
+
+# Specify which users can log in (optional)
+AllowUsers your_username
+
+# Listen on default SSH port
+Port 22
+```
+
+Save and exit the editor (Ctrl + X, then Y, then Enter)
+
+Restart the SSH service to apply changes
+
+```systemctl restart sshd```
+
 Great choice! Ansible is a powerful and user-friendly tool for automation. Here's a step-by-step guide to get you started with Ansible on macOS:
 
 1. Install Ansible:
