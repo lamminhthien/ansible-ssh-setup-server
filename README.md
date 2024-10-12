@@ -71,11 +71,31 @@ cd ~/ansible-project
 ```sh
 touch inventory.ini
 ```
-   Edit this file and add your server's IP or hostname:
-   ```
-   [servers]
-   your_server_ip_or_hostname
-   ```
+
+Edit this file and add your server's IP or hostname:
+
+```yaml
+[webservers]
+web1 ansible_host=192.168.1.10
+web2 ansible_host=192.168.1.11
+
+[dbservers]
+db1 ansible_host=192.168.1.20
+
+# For authorize server by ssh key
+#[all:vars]
+#ansible_user=your_ssh_user
+#ansible_ssh_private_key_file=/path/to/your/private/key
+#ansible_become=yes
+#ansible_become_method=sudo
+
+# For authorize server by ssh password
+[all:vars]
+ansible_user=root
+ansible_ssh_pass=aaaa
+ansible_become=yes
+ansible_become_method=sudo
+```
 
 5. Create an Ansible playbook:
 
