@@ -1,5 +1,5 @@
 ---
-- name: Install Docker and Nginx
+- name: Install Docker, Nginx, and Certbot
   hosts: all
   become: yes
 
@@ -26,6 +26,24 @@
     - name: Install Nginx
       ansible.builtin.apt:
         name: nginx
+        state: present
+
+    - name: Add Certbot repository
+      ansible.builtin.apt_repository:
+        repo: "ppa:certbot/certbot"
+        state: present
+
+    - name: Install Certbot and Nginx plugin
+      ansible.builtin.apt:
+        name: 
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Create cron job for Certbot auto-renewal
+      cron:
+        name: "Auto renew SSL certificates"
+        job: "0 0 * * * /usr/bin/certbot renew --quiet && systemctl reload nginx"
         state: present
 
     - name: Start and enable Docker service
