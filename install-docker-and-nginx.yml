@@ -28,17 +28,13 @@
         name: nginx
         state: present
 
-    - name: Add Certbot repository
-      ansible.builtin.apt_repository:
-        repo: "ppa:certbot/certbot"
-        state: present
-
     - name: Install Certbot and Nginx plugin
       ansible.builtin.apt:
         name: 
           - certbot
           - python3-certbot-nginx
         state: present
+        update_cache: yes
 
     - name: Create cron job for Certbot auto-renewal
       cron:
