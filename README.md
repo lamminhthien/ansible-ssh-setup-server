@@ -42,7 +42,7 @@ Great choice! Ansible is a powerful and user-friendly tool for automation. Here'
 
    Open Terminal and run:
    ```
-   brew install ansible
+   brew install ansible hudochenkov/sshpass/sshpass
    ```
 
 2. Verify the installation:
