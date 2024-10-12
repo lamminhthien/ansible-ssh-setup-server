@@ -2,11 +2,15 @@ Note: Before doing this tutorial, take note about installing Debian with VMware 
 
 Login as root
 
-```sudo su -```
+```sh
+sudo su -
+```
 
 Open the SSH configuration file
 
-```nano /etc/ssh/sshd_config```
+```sh
+nano /etc/ssh/sshd_config
+```
 
 ```
 # Allow password authentication
@@ -29,11 +33,15 @@ Save and exit the editor (Ctrl + X, then Y, then Enter)
 
 Restart the SSH service to apply changes
 
-```systemctl restart sshd```
+```sh
+systemctl restart sshd
+```
 
 Check the VM or server IP Address
 
-```ip addr show```
+```sh
+ip addr show
+```
 
 Great choice! Ansible is a powerful and user-friendly tool for automation. Here's a step-by-step guide to get you started with Ansible on macOS:
 
@@ -41,9 +49,10 @@ Great choice! Ansible is a powerful and user-friendly tool for automation. Here'
    The easiest way to install Ansible on macOS is using Homebrew. If you don't have Homebrew installed, you can install it first.
 
    Open Terminal and run:
-   ```
-   brew install ansible hudochenkov/sshpass/sshpass
-   ```
+
+```sh
+brew install ansible hudochenkov/sshpass/sshpass
+```
 
 2. Verify the installation:
    ```
@@ -51,15 +60,17 @@ Great choice! Ansible is a powerful and user-friendly tool for automation. Here'
    ```
 
 3. Create a directory for your Ansible project:
-   ```
-   mkdir ~/ansible-project
-   cd ~/ansible-project
-   ```
+
+```sh
+mkdir ~/ansible-project
+cd ~/ansible-project
+```
 
 4. Create an inventory file:
-   ```
-   touch inventory.ini
-   ```
+
+```sh
+touch inventory.ini
+```
    Edit this file and add your server's IP or hostname:
    ```
    [servers]
@@ -67,15 +78,15 @@ Great choice! Ansible is a powerful and user-friendly tool for automation. Here'
    ```
 
 5. Create an Ansible playbook:
-   ```
-   touch install-docker-and-nginx.yml
-   ```
+
+```sh
+touch install-docker-and-nginx.yml
+```
 
 6. Edit the install-docker-and-nginx.yml file to include tasks for installing Docker, Docker Compose, and Nginx. Here's a basic example:
 
    
-
-   ```yaml
+```yaml
 ---
 - name: Install Docker and Nginx
   hosts: all
@@ -117,13 +128,13 @@ Great choice! Ansible is a powerful and user-friendly tool for automation. Here'
         name: nginx
         state: started
         enabled: yes
-
 ```
 
 7. Run the playbook:
-   ```
-   ansible-playbook -i inventory.ini install-docker-and-nginx.yml --ask-become-pass
-   ```
+
+```sh
+ansible-playbook -i inventory.ini install-docker-and-nginx.yml --ask-become-pass
+```
 
 This playbook assumes you're using an Ubuntu-based server. You might need to adjust it based on your specific server OS.
 
