@@ -1,0 +1,62 @@
+---
+- name: Configure Nginx to point domain to port
+  hosts: all
+  become: yes
+
+  vars_prompt:
+    - name: "domain"
+      prompt: "Enter the domain"
+      private: no
+
+    - name: "port"
+      prompt: "Enter the port"
+      private: no
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Create Nginx configuration file
+      copy:
+        content: |
+          server {
+              listen 80;
+              server_name {{ domain }};
+
+              location / {
+                  proxy_pass http://localhost:{{ port }};
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+        dest: /etc/nginx/sites-available/{{ domain }}
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/{{ domain }}
+        dest: /etc/nginx/sites-enabled/{{ domain }}
+        state: link
+
+    - name: Remove default Nginx configuration
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
