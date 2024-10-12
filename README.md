@@ -31,6 +31,10 @@ Restart the SSH service to apply changes
 
 ```systemctl restart sshd```
 
+Check the VM or server IP Address
+
+```ip addr show```
+
 Great choice! Ansible is a powerful and user-friendly tool for automation. Here's a step-by-step guide to get you started with Ansible on macOS:
 
 1. Install Ansible:
