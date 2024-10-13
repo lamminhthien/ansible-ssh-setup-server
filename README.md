@@ -1,4 +1,6 @@
-Note: Before doing this tutorial, take note about installing Debian with VMware and configuring to use SSH.
+## Ansible a tool use ssh connection will help us automation install, config software, add cron job, add config domain to nginx,...
+
+### Note: Before doing this tutorial, take note about installing Debian with VMware and configuring to use SSH.
 
 Login as root
 
@@ -55,6 +57,7 @@ brew install ansible hudochenkov/sshpass/sshpass
 ```
 
 2. Verify the installation:
+
    ```
    ansible --version
    ```
@@ -105,10 +108,9 @@ touch install-docker-and-nginx.yml
 
 6. Edit the install-docker-and-nginx.yml file to include tasks for installing Docker, Docker Compose, and Nginx. Here's a basic example:
 
-   
 ```yaml
 ---
-- name: Install Docker and Nginx
+- name: Install Docker, Nginx, and Certbot
   hosts: all
   become: yes
 
@@ -137,6 +139,20 @@ touch install-docker-and-nginx.yml
         name: nginx
         state: present
 
+    - name: Install Certbot and Nginx plugin
+      ansible.builtin.apt:
+        name: 
+          - certbot
+          - python3-certbot-nginx
+        state: present
+        update_cache: yes
+
+    - name: Create cron job for Certbot auto-renewal
+      cron:
+        name: "Auto renew SSL certificates"
+        job: "0 0 * * * /usr/bin/certbot renew --quiet && systemctl reload nginx"
+        state: present
+
     - name: Start and enable Docker service
       ansible.builtin.service:
         name: docker
@@ -148,6 +164,7 @@ touch install-docker-and-nginx.yml
         name: nginx
         state: started
         enabled: yes
+
 ```
 
 7. Run the playbook:
@@ -159,8 +176,6 @@ ansible-playbook -i inventory.ini install-docker-and-nginx.yml --ask-become-pass
 This playbook assumes you're using an Ubuntu-based server. You might need to adjust it based on your specific server OS.
 
 A few things to note:
+
 - Ensure you have SSH access to your server.
 - The `--ask-become-pass` flag will prompt for the sudo password on the remote server.
-- You may need to adjust the Docker Compose version in the playbook to the latest version.
-
-Would you like me to explain any part of this process in more detail?
